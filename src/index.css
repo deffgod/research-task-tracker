@@ -7,10 +7,18 @@
     font-family: 'Inter', system-ui, sans-serif;
   }
   
+  body {
+    @apply bg-surface-50 text-surface-900 dark:bg-surface-950 dark:text-surface-50;
+    @apply transition-colors duration-300;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  
   input[type="checkbox"] {
     @apply appearance-none cursor-pointer;
-    @apply w-5 h-5 rounded border-2 border-purple-500;
-    @apply checked:bg-purple-500 checked:border-purple-500;
+    @apply w-5 h-5 rounded-once-md border-2 border-brand-500;
+    @apply checked:bg-brand-500 checked:border-brand-500;
     @apply transition-all duration-200;
     @apply relative;
   }
@@ -40,11 +48,12 @@
   }
   
   .progress-ring__background {
-    stroke: rgba(255, 255, 255, 0.1);
+    stroke: rgba(203, 213, 225, 0.2);
+    @apply dark:stroke-surface-800;
   }
   
   .progress-ring__progress {
-    stroke: rgb(139, 92, 246);
+    @apply stroke-brand-500;
     transition: stroke-dashoffset 0.35s;
   }
   
@@ -59,68 +68,152 @@
     justify-content: center;
     font-size: 16px;
     font-weight: 600;
-    color: white;
+    @apply text-surface-900 dark:text-white;
   }
   
   /* Custom scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
   
   ::-webkit-scrollbar-track {
-    background: rgba(15, 23, 42, 0.1);
+    @apply bg-surface-100 dark:bg-surface-800;
     border-radius: 4px;
   }
   
   ::-webkit-scrollbar-thumb {
-    background: rgba(139, 92, 246, 0.5);
+    @apply bg-surface-300 dark:bg-surface-600;
     border-radius: 4px;
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(139, 92, 246, 0.7);
+    @apply bg-surface-400 dark:bg-surface-500;
   }
   
-  .glass {
-    @apply bg-slate-900 bg-opacity-30;
-    @apply backdrop-blur-md;
-    @apply border border-white border-opacity-10;
-    @apply rounded-xl;
+  /* Once UI inspired components */
+  .once-card {
+    @apply bg-surface-50 dark:bg-surface-800;
+    @apply border border-surface-200 dark:border-surface-800;
+    @apply rounded-once-xl;
+    @apply shadow-once-sm;
+    @apply transition-all duration-200;
+    @apply hover:shadow-once-md;
   }
   
-  .glass-card {
-    @apply bg-slate-800 bg-opacity-40;
-    @apply backdrop-blur-md;
-    @apply border border-white border-opacity-10;
-    @apply rounded-xl;
-  }
-  
-  .glass-input {
-    @apply bg-slate-800 bg-opacity-50;
-    @apply border border-white border-opacity-10;
-    @apply text-white;
-    @apply rounded-lg px-4 py-3;
+  .once-input {
+    @apply bg-surface-50 dark:bg-surface-800;
+    @apply border border-surface-200 dark:border-surface-800;
+    @apply text-surface-900 dark:text-white;
+    @apply rounded-once-lg px-4 py-3;
     @apply w-full;
     @apply text-sm;
     @apply outline-none;
     @apply transition duration-200;
-    @apply focus:border-purple-500 focus:border-opacity-60;
-    @apply focus:ring-2 focus:ring-purple-500 focus:ring-opacity-20;
+    @apply focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20;
   }
   
-  .glass-button {
-    @apply bg-purple-600 bg-opacity-70;
-    @apply backdrop-blur-sm;
-    @apply border-none;
-    @apply text-white;
-    @apply px-6 py-3;
-    @apply rounded-lg;
+  .once-button {
+    @apply bg-brand-500 hover:bg-brand-600 active:bg-brand-700;
+    @apply text-white font-medium;
+    @apply rounded-once-lg px-6 py-3;
+    @apply transition-all duration-200;
+    @apply shadow-sm;
+    @apply focus:outline-none focus:ring-2 focus:ring-brand-500/50;
+  }
+  
+  .once-button-secondary {
+    @apply bg-surface-100 dark:bg-surface-800;
+    @apply text-surface-900 dark:text-white font-medium;
+    @apply rounded-once-lg px-6 py-3;
+    @apply border border-surface-200 dark:border-surface-700;
+    @apply transition-all duration-200;
+    @apply hover:bg-surface-200 dark:hover:bg-surface-700;
+    @apply focus:outline-none focus:ring-2 focus:ring-brand-500/50;
+  }
+  
+  .once-panel {
+    @apply bg-surface-50 dark:bg-surface-950;
+    @apply border border-surface-200 dark:border-surface-800;
+    @apply rounded-once-xl p-6;
+    @apply shadow-once-md;
+  }
+  
+  .once-badge {
+    @apply inline-flex items-center;
+    @apply rounded-once-full px-2.5 py-0.5;
+    @apply text-xs font-medium;
+  }
+  
+  .once-badge-red {
+    @apply bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400;
+  }
+  
+  .once-badge-yellow {
+    @apply bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400;
+  }
+  
+  .once-badge-green {
+    @apply bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400;
+  }
+  
+  .once-badge-blue {
+    @apply bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400;
+  }
+  
+  /* Neon button */
+  .neon-button {
+    @apply bg-neon-500 text-surface-950;
+    @apply hover:bg-neon-400 active:bg-neon-600;
+    @apply rounded-once-lg px-6 py-3;
     @apply font-medium;
-    @apply cursor-pointer;
-    @apply transition duration-200;
-    @apply hover:bg-purple-600 hover:bg-opacity-90;
-    @apply hover:transform hover:-translate-y-0.5;
-    @apply hover:shadow-lg hover:shadow-purple-500/30;
-    @apply active:transform active:translate-y-0;
+    @apply transition-all duration-200;
+    @apply shadow-sm;
+    @apply hover:shadow-once-md;
+    @apply focus:outline-none focus:ring-2 focus:ring-neon-500/50;
+  }
+  
+  /* Message styles */
+  .message {
+    @apply max-w-[75%] p-4 my-1;
+    @apply rounded-once-xl;
+    @apply text-base;
+    @apply relative transition-transform duration-200;
+    @apply hover:translate-y-[-1px];
+  }
+  
+  .message.incoming {
+    @apply self-start;
+    @apply bg-neon-500/10 text-surface-900 dark:text-white;
+    @apply rounded-bl-none;
+    @apply animate-slideFromLeft;
+  }
+  
+  .message.outgoing {
+    @apply self-end;
+    @apply bg-brand-500 text-white;
+    @apply rounded-br-none;
+    @apply animate-slideFromRight;
+  }
+  
+  .message.sending {
+    @apply opacity-70 relative;
+  }
+  
+  .message.sending::after {
+    content: '';
+    @apply absolute right-[-24px] top-1/2 transform translate-y-[-50%];
+    @apply w-4 h-4;
+    @apply border-2 border-neon-500 rounded-full;
+    @apply border-r-transparent;
+    @apply animate-rotate;
+  }
+  
+  .message.received {
+    @apply animate-fadeIn;
+  }
+  
+  .message.error {
+    @apply border border-error-500;
+    @apply bg-error-500/10 text-error-500;
   }
 }

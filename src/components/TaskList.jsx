@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { FiEdit2, FiTrash2, FiChevronDown, FiChevronUp, FiClock } from 'react-icons/fi';
+import styled from 'styled-components';
+import { FiEdit2, FiTrash2, FiChevronDown, FiChevronUp, FiClock, FiCalendar } from 'react-icons/fi';
 import TaskForm from './TaskForm';
+import GlowingCard from './ui/GlowingCard';
 
 const TaskList = ({ tasks, toggleTaskCompletion, deleteTask, updateTask }) => {
   const [expandedTaskId, setExpandedTaskId] = useState(null);
@@ -14,30 +16,38 @@ const TaskList = ({ tasks, toggleTaskCompletion, deleteTask, updateTask }) => {
     setEditingTaskId(taskId);
   };
   
-  const getPriorityColor = (priority) => {
+  const getPriorityBadgeClass = (priority) => {
     switch(priority) {
-      case 'high': return 'bg-red-500';
-      case 'medium': return 'bg-yellow-500';
-      case 'low': return 'bg-green-500';
-      default: return 'bg-blue-500';
+      case 'high': return 'once-badge-red';
+      case 'medium': return 'once-badge-yellow';
+      case 'low': return 'once-badge-green';
+      default: return 'once-badge-blue';
     }
   };
   
   if (tasks.length === 0) {
     return (
-      <div className="glass-card p-8 text-center">
-        <p className="text-gray-300 mb-4">No tasks found</p>
-        <p className="text-sm text-gray-400">Add a new task to get started with your research tracking</p>
-      </div>
+      <GlowingCard width="100%" height="12rem">
+        <div className="text-center py-10">
+          <p className="mb-4">No tasks found</p>
+          <p className="text-sm">Add a new task to get started with your research tracking</p>
+        </div>
+      </GlowingCard>
     );
   }
   
   return (
     <div className="space-y-4">
       {tasks.map(task => (
-        <div key={task.id} className="glass-card overflow-hidden">
+        <StyledTaskCard
+          key={task.id}
+          width="100%"
+          height="auto"
+          title={task.completed ? `✓ ${task.title}` : task.title}
+          titleStyle={task.completed ? 'completed-title' : ''}
+        >
           {editingTaskId === task.id ? (
-            <div className="p-6">
+            <div className="p-4">
               <TaskForm 
                 addTask={(updatedTask) => {
                   updateTask({ ...updatedTask, id: task.id, createdAt: task.createdAt });
@@ -50,82 +60,165 @@ const TaskList = ({ tasks, toggleTaskCompletion, deleteTask, updateTask }) => {
             </div>
           ) : (
             <>
-              <div className="p-6">
-                <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 mt-1">
-                    <input 
-                      type="checkbox" 
-                      checked={task.completed} 
-                      onChange={() => toggleTaskCompletion(task.id)}
-                      className="w-5 h-5 rounded-full border-2 border-purple-500 checked:bg-purple-500 transition duration-200"
-                    />
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 mt-1">
+                  <CustomCheckbox 
+                    type="checkbox" 
+                    checked={task.completed} 
+                    onChange={() => toggleTaskCompletion(task.id)}
+                    className="task-checkbox"
+                  />
+                </div>
+                
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-start">
+                    <div className="flex items-center">
+                      <PriorityBadge priority={task.priority}>
+                        {task.priority}
+                      </PriorityBadge>
+                    </div>
+                    <div className="flex items-center space-x-2 ml-4">
+                      <ActionButton onClick={() => startEditing(task.id)}>
+                        <FiEdit2 size={16} />
+                      </ActionButton>
+                      <ActionButton className="delete" onClick={() => deleteTask(task.id)}>
+                        <FiTrash2 size={16} />
+                      </ActionButton>
+                      <ActionButton onClick={() => toggleExpand(task.id)}>
+                        {expandedTaskId === task.id ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
+                      </ActionButton>
+                    </div>
                   </div>
                   
-                  <div className="flex-1 min-w-0">
-                    <div className="flex justify-between items-start">
-                      <h3 className={`text-lg font-medium ${task.completed ? 'line-through text-gray-400' : 'text-white'}`}>
-                        {task.title}
-                      </h3>
-                      <div className="flex items-center space-x-2 ml-4">
-                        <span className={`text-xs px-2 py-1 rounded-full ${getPriorityColor(task.priority)} text-white`}>
-                          {task.priority}
-                        </span>
-                        <button 
-                          onClick={() => startEditing(task.id)}
-                          className="p-1 text-gray-400 hover:text-white transition"
-                        >
-                          <FiEdit2 size={16} />
-                        </button>
-                        <button 
-                          onClick={() => deleteTask(task.id)}
-                          className="p-1 text-gray-400 hover:text-red-400 transition"
-                        >
-                          <FiTrash2 size={16} />
-                        </button>
-                        <button 
-                          onClick={() => toggleExpand(task.id)}
-                          className="p-1 text-gray-400 hover:text-white transition"
-                        >
-                          {expandedTaskId === task.id ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
-                        </button>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-2 flex items-center text-sm text-gray-400">
-                      <FiClock className="mr-1" size={14} />
-                      <span>Due: {new Date(task.dueDate).toLocaleDateString()}</span>
-                    </div>
+                  <div className="mt-2 flex items-center text-sm">
+                    <FiCalendar className="mr-1" size={14} />
+                    <span>Due: {new Date(task.dueDate).toLocaleDateString()}</span>
                   </div>
                 </div>
               </div>
               
               {expandedTaskId === task.id && (
-                <div className="px-6 pb-6 pt-0">
-                  <div className="mt-2 text-gray-300">
-                    <div className="glass-card bg-opacity-30 p-4">
-                      <h4 className="text-sm font-medium text-purple-400 mb-2">Description</h4>
-                      <p className="text-gray-300 whitespace-pre-line">{task.description || 'No description provided.'}</p>
-                    </div>
-                    
-                    <div className="mt-4 grid grid-cols-2 gap-4">
-                      <div className="glass-card bg-opacity-30 p-4">
-                        <h4 className="text-sm font-medium text-purple-400 mb-2">Category</h4>
-                        <p>{task.category || 'Uncategorized'}</p>
-                      </div>
-                      <div className="glass-card bg-opacity-30 p-4">
-                        <h4 className="text-sm font-medium text-purple-400 mb-2">Created</h4>
-                        <p>{new Date(task.createdAt).toLocaleDateString()}</p>
-                      </div>
-                    </div>
+                <div className="mt-4">
+                  <DescriptionPanel>
+                    <h4 className="panel-title">Description</h4>
+                    <p className="whitespace-pre-line">{task.description || 'No description provided.'}</p>
+                  </DescriptionPanel>
+                  
+                  <div className="mt-4 grid grid-cols-2 gap-4">
+                    <DescriptionPanel>
+                      <h4 className="panel-title">Category</h4>
+                      <p>{task.category || 'Uncategorized'}</p>
+                    </DescriptionPanel>
+                    <DescriptionPanel>
+                      <h4 className="panel-title">Created</h4>
+                      <p>{new Date(task.createdAt).toLocaleDateString()}</p>
+                    </DescriptionPanel>
                   </div>
                 </div>
               )}
             </>
           )}
-        </div>
+        </StyledTaskCard>
       ))}
     </div>
   );
 };
+
+const StyledTaskCard = styled(GlowingCard)`
+  &:after {
+    background: ${props => 
+      props.children[0]?.props?.children?.props?.initialData?.priority === 'high' 
+        ? 'linear-gradient(to bottom, #ff4d4d, #ff2b2b, #ff0000)' 
+        : props.children[0]?.props?.children?.props?.initialData?.priority === 'medium'
+          ? 'linear-gradient(to bottom, #ffbc2b, #ffa72b, #ff952b)'
+          : 'var(--gradient)'
+    };
+  }
+  
+  .completed-title {
+    text-decoration: line-through;
+    opacity: 0.7;
+  }
+`;
+
+const CustomCheckbox = styled.input`
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 0.375rem;
+  border: 2px solid var(--color);
+  appearance: none;
+  background-color: transparent;
+  display: inline-block;
+  position: relative;
+  margin-right: 0.5rem;
+  cursor: pointer;
+  vertical-align: middle;
+  
+  &:checked {
+    background-color: var(--color);
+    
+    &:after {
+      content: '✓';
+      position: absolute;
+      color: #18181b;
+      font-size: 0.875rem;
+      top: -0.125rem;
+      left: 0.125rem;
+    }
+  }
+`;
+
+const PriorityBadge = styled.span`
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  background: ${props => 
+    props.priority === 'high' 
+      ? 'rgba(255, 77, 77, 0.2)' 
+      : props.priority === 'medium'
+        ? 'rgba(255, 167, 43, 0.2)'
+        : 'rgba(43, 255, 136, 0.2)'
+  };
+  color: ${props => 
+    props.priority === 'high' 
+      ? '#ff4d4d' 
+      : props.priority === 'medium'
+        ? '#ffa72b'
+        : '#2bff88'
+  };
+`;
+
+const ActionButton = styled.button`
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  color: ${props => props.theme.colors.secondary};
+  background: transparent;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: ${props => props.theme.colors.primary};
+    
+    &.delete {
+      color: #ff4d4d;
+    }
+  }
+`;
+
+const DescriptionPanel = styled.div`
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  
+  .panel-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color);
+    margin-bottom: 0.5rem;
+  }
+`;
 
 export default TaskList;
