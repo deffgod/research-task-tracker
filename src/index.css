@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  input[type="checkbox"] {
+    @apply appearance-none cursor-pointer;
+    @apply w-5 h-5 rounded border-2 border-purple-500;
+    @apply checked:bg-purple-500 checked:border-purple-500;
+    @apply transition-all duration-200;
+    @apply relative;
+  }
+  
+  input[type="checkbox"]:checked::after {
+    content: "";
+    @apply absolute;
+    @apply w-3 h-1.5 border-b-2 border-l-2 border-white;
+    @apply left-1/2 top-1/2;
+    @apply -translate-x-1/2 -translate-y-1/2 rotate-45;
+  }
+}
+
+@layer components {
+  /* Progress rings */
+  .progress-ring {
+    position: relative;
+    display: inline-block;
+    height: 64px;
+    width: 64px;
+  }
+  
+  .progress-ring__circle {
+    stroke-linecap: round;
+    transform-origin: 50% 50%;
+    transform: rotate(-90deg);
+  }
+  
+  .progress-ring__background {
+    stroke: rgba(255, 255, 255, 0.1);
+  }
+  
+  .progress-ring__progress {
+    stroke: rgb(139, 92, 246);
+    transition: stroke-dashoffset 0.35s;
+  }
+  
+  .progress-ring__text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.1);
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: rgba(139, 92, 246, 0.5);
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(139, 92, 246, 0.7);
+  }
+  
+  .glass {
+    @apply bg-slate-900 bg-opacity-30;
+    @apply backdrop-blur-md;
+    @apply border border-white border-opacity-10;
+    @apply rounded-xl;
+  }
+  
+  .glass-card {
+    @apply bg-slate-800 bg-opacity-40;
+    @apply backdrop-blur-md;
+    @apply border border-white border-opacity-10;
+    @apply rounded-xl;
+  }
+  
+  .glass-input {
+    @apply bg-slate-800 bg-opacity-50;
+    @apply border border-white border-opacity-10;
+    @apply text-white;
+    @apply rounded-lg px-4 py-3;
+    @apply w-full;
+    @apply text-sm;
+    @apply outline-none;
+    @apply transition duration-200;
+    @apply focus:border-purple-500 focus:border-opacity-60;
+    @apply focus:ring-2 focus:ring-purple-500 focus:ring-opacity-20;
+  }
+  
+  .glass-button {
+    @apply bg-purple-600 bg-opacity-70;
+    @apply backdrop-blur-sm;
+    @apply border-none;
+    @apply text-white;
+    @apply px-6 py-3;
+    @apply rounded-lg;
+    @apply font-medium;
+    @apply cursor-pointer;
+    @apply transition duration-200;
+    @apply hover:bg-purple-600 hover:bg-opacity-90;
+    @apply hover:transform hover:-translate-y-0.5;
+    @apply hover:shadow-lg hover:shadow-purple-500/30;
+    @apply active:transform active:translate-y-0;
+  }
+}
